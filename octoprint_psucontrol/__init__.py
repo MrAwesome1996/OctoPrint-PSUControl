@@ -12,6 +12,7 @@ import subprocess
 import threading
 import os
 from flask import make_response, jsonify
+from octoprint.events import eventManager, Events
 
 try:
     from octoprint.util import ResettableTimer
@@ -506,7 +507,7 @@ class PSUControl(octoprint.plugin.StartupPlugin,
                 return (None,)
 
     def turn_psu_on(self):
-        self._event_bus.fire("PSU_On")
+        eventManager().fire("PSU_On")
         if self.switchingMethod == 'GCODE' or self.switchingMethod == 'GPIO' or self.switchingMethod == 'SYSTEM':
             self._logger.info("Switching PSU On")
             if self.switchingMethod == 'GCODE':
@@ -544,7 +545,7 @@ class PSUControl(octoprint.plugin.StartupPlugin,
             self.check_psu_state()
         
     def turn_psu_off(self):
-        self._event_bus.fire("PSU_Off")
+        eventManager().fire("PSU_Off")
         if self.switchingMethod == 'GCODE' or self.switchingMethod == 'GPIO' or self.switchingMethod == 'SYSTEM':
             self._logger.info("Switching PSU Off")
             if self.switchingMethod == 'GCODE':
